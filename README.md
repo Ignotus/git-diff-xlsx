@@ -1,6 +1,6 @@
 # git-diff-xlsx
 
-Implements git diff for the XLSX format. Theoretically works with DOCX as well.
+Implements git diff for the XLSX format.
 
 
 ### Setup
