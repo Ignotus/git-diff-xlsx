@@ -1,19 +1,18 @@
 #!/usr/bin/env python3
 import sys
-from zipfile import ZipFile
-from lxml import etree
 
-
-def extract_zip(input_zip):
-    input_zip=ZipFile(input_zip)
-    return {name: input_zip.read(name) for name in input_zip.namelist()}
+import polars as pl
 
 
 def main(filename):
-    data = extract_zip(filename)
-    for f, value in data.items():
-        root = etree.fromstring(value)
-        print(etree.tostring(root, pretty_print=True).decode())
+    with open(filename, "rb") as f, pl.Config(tbl_cols=-1, tbl_rows=-1):
+        df = pl.read_excel(f, sheet_id=0)
+        for k, v in df.items():
+            v = v.with_columns([pl.col(column).cast(pl.Utf8) for column in v.columns])
+            v = v.with_columns([pl.col(column).fill_null("") for column in v.columns])
+
+            print("Table Name:", k)
+            print(v)
 
 
 if __name__ == "__main__":

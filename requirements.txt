@@ -1,1 +1,2 @@
-lxml
+polars
+xlsx2csv
